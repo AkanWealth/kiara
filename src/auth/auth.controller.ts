@@ -9,6 +9,8 @@ import {
   NotFoundException,
   Patch,
   Param,
+  BadRequestException,
+  HttpCode,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from './schema/user.model';
@@ -55,5 +57,19 @@ export class AuthController {
       throw new NotFoundException(`User with id ${id} not found`);
     }
     return updatedUser;
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string): Promise<void> {
+    await this.authService.sendPasswordResetEmail(email);
+  }
+
+  @Post('reset-password')
+  @HttpCode(204)
+  async resetPassword(
+    @Body('token') token: string,
+    @Body('newPassword') newPassword: string,
+  ): Promise<void> {
+    await this.authService.resetPassword(token, newPassword);
   }
 }

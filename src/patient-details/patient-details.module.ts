@@ -9,6 +9,7 @@ import {
 import { User, UserSchema } from '../auth/schema/user.model';
 import { AuthService } from '../auth/auth.service';
 import { AuthModule } from '../auth/auth.module';
+import { MailerModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthModule } from '../auth/auth.module';
       { name: User.name, schema: UserSchema },
     ]),
     AuthModule,
+    MailerModule,
   ],
   controllers: [PatientDetailsController],
   providers: [PatientDetailsService, AuthService],
