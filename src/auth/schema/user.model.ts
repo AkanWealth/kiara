@@ -12,8 +12,32 @@ export class User {
   @Prop({ required: true })
   lastName: string;
 
+  @Prop({ required: true })
+  username: string;
+
   @Prop({ required: true, unique: true })
   email: string;
+
+  @Prop({ required: true })
+  address: string;
+
+  @Prop({ required: true })
+  city: string;
+
+  @Prop({ required: true })
+  passcode: string;
+
+  @Prop({ required: true })
+  gender: string;
+
+  @Prop({ required: true })
+  homePhone: string;
+
+  @Prop({ required: true })
+  workPhone: string;
+
+  @Prop({ required: true })
+  mobilePhone: string;
 
   @Prop({ required: true })
   password: string;
@@ -26,9 +50,6 @@ export class User {
 
   @Prop({ required: false })
   dob: Date;
-
-  @Prop({ required: false })
-  gender: string;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Patient' }] })
   patientDetails: PatientDetail[];

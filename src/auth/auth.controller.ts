@@ -29,7 +29,7 @@ export class AuthController {
   @Post('login')
   async login(
     @Body() credentials: { email: string; password: string },
-  ): Promise<{ token: string }> {
+  ): Promise<{ user: User; token: string }> {
     const user = await this.authService.validateUser(
       credentials.email,
       credentials.password,
@@ -38,13 +38,13 @@ export class AuthController {
       throw new UnauthorizedException();
     }
     const token = await this.authService.generateJwt(user);
-    return { token };
+    return { user, token };
   }
 
-  @Get('profile')
+  @Get('profile/:id')
   @UseGuards(AuthGuard)
-  async getProfile(@Req() request: any): Promise<User> {
-    return request.user;
+  async getProfile(@Param('id') id: string): Promise<User> {
+    return this.authService.getUser(id);
   }
 
   @Patch(':id')

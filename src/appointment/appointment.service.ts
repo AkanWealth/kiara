@@ -25,6 +25,11 @@ export class AppointmentService {
     return this.appointmentModel.find().exec();
   }
 
+  async findByPatientId(patientId: string): Promise<Appointment[]> {
+    const query = { patientId };
+    return this.appointmentModel.find(query).exec();
+  }
+
   async findOne(id: string): Promise<Appointment> {
     return this.appointmentModel.findById(id).exec();
   }

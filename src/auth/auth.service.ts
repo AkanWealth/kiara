@@ -36,6 +36,14 @@ export class AuthService {
     return this.userModel.findOne({ username });
   }
 
+  async getUser(id: string): Promise<User> {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
   async validateUser(email: string, password: string): Promise<User> {
     const user = await this.findByEmail(email);
     if (user && bcrypt.compareSync(password, user.password)) {
