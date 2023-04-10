@@ -22,6 +22,22 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() user: User): Promise<User> {
+    const { email, medicareNumber, medicareLineNumber } = user;
+    const existingUser = await this.authService.findByEmail(email);
+    if (existingUser) {
+      throw new BadRequestException('Email already exists');
+    }
+    const existingUserByMedicare = await this.authService.findByMedicareNumber(
+      medicareNumber,
+    );
+    if (existingUserByMedicare) {
+      throw new BadRequestException('Medicare number already exists');
+    }
+    const existingUserByMedicareLine =
+      await this.authService.findByMedicareLineNumber(medicareLineNumber);
+    if (existingUserByMedicareLine) {
+      throw new BadRequestException('Medicare line number already exists');
+    }
     const data = await this.authService.create(user);
     return data;
   }

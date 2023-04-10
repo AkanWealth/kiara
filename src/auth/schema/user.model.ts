@@ -46,7 +46,7 @@ export class User {
   medicareNumber: number;
 
   @Prop({ unique: true })
-  MedicareLineNumber: number;
+  medicareLineNumber: number;
 
   @Prop({ required: false })
   dob: Date;

@@ -32,6 +32,14 @@ export class AuthService {
     return this.userModel.findOne({ email });
   }
 
+  async findByMedicareNumber(medicareNumber: number): Promise<User> {
+    return this.userModel.findOne({ medicareNumber }).exec();
+  }
+
+  async findByMedicareLineNumber(medicareLineNumber: number): Promise<User> {
+    return this.userModel.findOne({ medicareLineNumber }).exec();
+  }
+
   async findByUsername(username: string): Promise<User> {
     return this.userModel.findOne({ username });
   }
