@@ -3,14 +3,14 @@ import {
   Controller,
   Get,
   Post,
-  Req,
   UseGuards,
   UnauthorizedException,
   NotFoundException,
   Patch,
   Param,
-  BadRequestException,
+  HttpException,
   HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from './schema/user.model';
@@ -25,18 +25,24 @@ export class AuthController {
     const { email, medicareNumber, medicareLineNumber } = user;
     const existingUser = await this.authService.findByEmail(email);
     if (existingUser) {
-      throw new BadRequestException('Email already exists');
+      throw new HttpException('Email already exists', HttpStatus.CONFLICT);
     }
     const existingUserByMedicare = await this.authService.findByMedicareNumber(
       medicareNumber,
     );
     if (existingUserByMedicare) {
-      throw new BadRequestException('Medicare number already exists');
+      throw new HttpException(
+        'Medicare number already exists',
+        HttpStatus.CONFLICT,
+      );
     }
     const existingUserByMedicareLine =
       await this.authService.findByMedicareLineNumber(medicareLineNumber);
     if (existingUserByMedicareLine) {
-      throw new BadRequestException('Medicare line number already exists');
+      throw new HttpException(
+        'Medicare line number already exists',
+        HttpStatus.CONFLICT,
+      );
     }
     const data = await this.authService.create(user);
     return data;
