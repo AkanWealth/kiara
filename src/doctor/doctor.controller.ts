@@ -6,30 +6,26 @@ import {
   Body,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { Doctor } from './schema/doctor.model';
 import { CreateDoctorDto } from './dto/doctor.dto';
 import { CreateAppointmentDto } from './dto/appiontment.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('doctors')
 export class DoctorController {
   constructor(private readonly doctorService: DoctorService) {}
 
   @Post()
+  @UseGuards()
   async create(@Body() doctorDto: CreateDoctorDto): Promise<Doctor> {
     return this.doctorService.create(doctorDto);
   }
 
-  // @Get()
-  // async findAll(
-  //   @Query('page') page: number,
-  //   @Query('limit') limit: number,
-  // ): Promise<{ doctors: Doctor[]; count: number }> {
-  //   return this.doctorService.findAll(page, limit);
-  // }
-
   @Get()
+  @UseGuards(AuthGuard)
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
@@ -39,11 +35,13 @@ export class DoctorController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   async findById(@Param('id') id: string): Promise<Doctor> {
     return this.doctorService.findById(id);
   }
 
   @Post(':id/appointments')
+  @UseGuards(AuthGuard)
   async bookAppointment(
     @Param('id') id: string,
     @Body() createAppointmentDto: CreateAppointmentDto,
@@ -59,6 +57,7 @@ export class DoctorController {
   }
 
   @Delete(':appointmentId')
+  @UseGuards(AuthGuard)
   async cancelAppointment(
     @Param('appointmentId') appointmentId: string,
   ): Promise<Doctor> {
@@ -66,6 +65,7 @@ export class DoctorController {
   }
 
   @Get('search')
+  @UseGuards(AuthGuard)
   async searchDoctors(
     @Query('name') name: string,
     @Query('specialty') specialty: string,
