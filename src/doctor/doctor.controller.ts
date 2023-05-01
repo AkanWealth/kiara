@@ -13,6 +13,7 @@ import { Doctor } from './schema/doctor.model';
 import { CreateDoctorDto } from './dto/doctor.dto';
 import { CreateAppointmentDto } from './dto/appiontment.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Appointment } from './schema/appointment.model';
 
 @Controller('doctors')
 export class DoctorController {
@@ -40,17 +41,28 @@ export class DoctorController {
     return this.doctorService.findById(id);
   }
 
+  @Get('all/appointments')
+  @UseGuards(AuthGuard)
+  async findAllAppointment(
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+    @Query('searchQuery') searchQuery?: string,
+  ): Promise<{ data: Appointment[]; count: number }> {
+    return this.doctorService.findAllAppointment(+page, +limit, searchQuery);
+  }
+
   @Post(':id/appointments')
   @UseGuards(AuthGuard)
   async bookAppointment(
     @Param('id') id: string,
     @Body() createAppointmentDto: CreateAppointmentDto,
   ): Promise<Doctor> {
-    const { appointmentTime, appointmentType, forPerson } =
+    const { appointmentDate, appointmentTime, appointmentType, forPerson } =
       createAppointmentDto;
     return this.doctorService.bookAppointment(
       id,
       appointmentTime,
+      appointmentDate,
       appointmentType,
       forPerson,
     );

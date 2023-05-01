@@ -1,17 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-// import { AppointmentType } from '../../appointment/dto/enum/appointment.enum';
 
+export type AppointmentDocument = Appointment & Document;
 @Schema()
-export class Appointment extends Document {
-  // @Prop({ required: true, ref: 'User' })
-  // patientId: string;
-
+export class Appointment {
   @Prop({ required: true, ref: 'Doctor' })
   doctorId: string;
 
   @Prop({ required: true })
-  appointmentTime: Date;
+  appointmentDate: Date;
+
+  @Prop({ required: true })
+  appointmentTime: string;
 
   @Prop({ required: true })
   appointmentType: string;
@@ -27,4 +27,3 @@ export class Appointment extends Document {
 }
 
 export const AppointmentSchema = SchemaFactory.createForClass(Appointment);
-export type AppointmentDocument = Appointment & Document;

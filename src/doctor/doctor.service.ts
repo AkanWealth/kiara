@@ -70,6 +70,28 @@ export class DoctorService {
     return { data: doctors, count };
   }
 
+  async findAllAppointment(
+    page = 1,
+    limit = 10,
+    searchQuery?: string,
+  ): Promise<{ data: Appointment[]; count: number }> {
+    const skip = (page - 1) * limit;
+    const query = {};
+    if (searchQuery) {
+      query['$or'] = [
+        { appointmentType: { $regex: searchQuery, $options: 'i' } },
+        { forPerson: { $regex: searchQuery, $options: 'i' } },
+      ];
+    }
+
+    const [appointment, count] = await Promise.all([
+      this.appointmentModel.find(query).skip(skip).limit(limit).exec(),
+      this.appointmentModel.countDocuments(query),
+    ]);
+
+    return { data: appointment, count };
+  }
+
   async findById(id: string): Promise<Doctor> {
     return this.doctorModel.findById(id).exec();
   }
@@ -77,6 +99,7 @@ export class DoctorService {
   async bookAppointment(
     id: string,
     appointmentTime: string,
+    appointmentDate: Date,
     appointmentType: string,
     forPerson: string,
   ): Promise<Doctor> {
@@ -93,6 +116,7 @@ export class DoctorService {
     const existingAppointment = await this.appointmentModel
       .findOne({
         doctorId: id,
+        appointmentDate,
         appointmentTime: formattedTime.toDate(),
       })
       .exec();
@@ -104,6 +128,7 @@ export class DoctorService {
     const appointment = new this.appointmentModel({
       doctorId: id,
       appointmentTime: formattedTime.toDate(),
+      appointmentDate: appointmentDate,
       appointmentType: appointmentType,
       forPerson: forPerson,
     });
