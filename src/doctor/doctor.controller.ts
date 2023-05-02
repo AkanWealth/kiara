@@ -26,7 +26,7 @@ export class DoctorController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
@@ -42,7 +42,7 @@ export class DoctorController {
   }
 
   @Get('all/appointments')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   async findAllAppointment(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
