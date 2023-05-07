@@ -61,7 +61,12 @@ export class AuthService {
   }
 
   async generateJwt(user: User): Promise<string> {
-    const payload = { email: user.email, sub: user.id };
+    const payload = {
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      sub: user.id,
+    };
     return jwt.sign(payload, 'secretKey');
   }
 
