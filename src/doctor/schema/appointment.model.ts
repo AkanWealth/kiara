@@ -19,11 +19,18 @@ export class Appointment {
   @Prop({ required: true })
   forPerson: string;
 
+  @Prop({ required: true, default: 'Done' })
+  status: string;
+
   @Prop({ default: Date.now })
   createdOn: Date;
 
   @Prop({ default: Date.now })
   updatedOn: Date;
+  name: string;
+  specialization: string;
+  availability: string[];
+  appointments: string[];
 }
 
 export const AppointmentSchema = SchemaFactory.createForClass(Appointment);

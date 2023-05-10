@@ -4,4 +4,5 @@ export class CreateAppointmentDto {
   readonly appointmentDate: Date;
   readonly appointmentType: string;
   readonly forPerson: string;
+  readonly status: string;
 }
