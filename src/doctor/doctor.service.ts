@@ -109,6 +109,47 @@ export class DoctorService {
     return { data, count };
   }
 
+  async findAllFutureAppointment(
+    page = 1,
+    limit = 10,
+    searchQuery?: string,
+  ): Promise<{ data: AppointmentWithDoctor[]; count: number }> {
+    const skip = (page - 1) * limit;
+    const query = {
+      appointmentDate: { $gte: new Date() }, // Filter for future appointments
+    };
+    if (searchQuery) {
+      query['$or'] = [
+        { appointmentType: { $regex: searchQuery, $options: 'i' } },
+        { forPerson: { $regex: searchQuery, $options: 'i' } },
+      ];
+    }
+
+    const [appointments, count] = await Promise.all([
+      this.appointmentModel.find(query).skip(skip).limit(limit).exec(),
+      this.appointmentModel.countDocuments(query),
+    ]);
+
+    const doctorMap = new Map<string, Doctor>();
+    const doctors = await this.doctorModel
+      .find({ _id: { $in: appointments.map((a) => a.doctorId) } })
+      .exec();
+    doctors.forEach((doctor) => {
+      doctorMap.set(doctor._id.toString(), doctor);
+    });
+
+    const data: AppointmentWithDoctor[] = appointments.map((appointment) => {
+      const doctor = doctorMap.get(appointment.doctorId.toString());
+      const appointmentWithDoctor: AppointmentWithDoctor = {
+        ...appointment.toJSON(),
+        doctorName: doctor ? doctor.name : 'Unknown Doctor',
+      };
+      return appointmentWithDoctor;
+    });
+
+    return { data, count };
+  }
+
   async findById(id: string): Promise<Doctor> {
     return this.doctorModel.findById(id).exec();
   }

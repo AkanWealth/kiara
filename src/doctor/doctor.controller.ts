@@ -53,6 +53,20 @@ export class DoctorController {
     return this.doctorService.findAllAppointment(+page, +limit, searchQuery);
   }
 
+  @Get('all/future/appointments')
+  // @UseGuards(AuthGuard)
+  async findAllFutureAppointment(
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+    @Query('searchQuery') searchQuery?: string,
+  ): Promise<{ data: Appointment[]; count: number }> {
+    return this.doctorService.findAllFutureAppointment(
+      +page,
+      +limit,
+      searchQuery,
+    );
+  }
+
   @Post(':id/appointments')
   @UseGuards(AuthGuard)
   async bookAppointment(
@@ -75,73 +89,6 @@ export class DoctorController {
       status,
     );
   }
-
-  // @Delete(':appointmentId')
-  // @UseGuards(AuthGuard)
-  // async cancelAppointment(
-  //   @Param('appointmentId') appointmentId: string,
-  // ): Promise<Doctor> {
-  //   return this.doctorService.cancelAppointment(appointmentId);
-  // }
-
-  // @Delete(':id')
-  // async cancelAppointment(
-  //   appointmentId: string,
-  // ): Promise<{ doctor: Doctor; status: string }> {
-  //   const updatedDoctor = await this.doctorService.cancelAppointment(
-  //     appointmentId,
-  //   );
-  //   if (!updatedDoctor) {
-  //     throw new NotFoundException(`Doctor not found`);
-  //   }
-  //   return { doctor: updatedDoctor, status: 'cancelled' };
-  // }
-
-  // @Delete(':id/appointments')
-  // async cancelAppointment(@Param('id') appointmentId: string): Promise<{
-  //   name: string;
-  //   specialization: string;
-  //   availability: string[];
-  //   appointments: string[];
-  //   status: string;
-  // }> {
-  //   const updatedDoctor = await this.doctorService.cancelAppointment(
-  //     appointmentId,
-  //     'cancelled',
-  //   );
-  //   if (!updatedDoctor) {
-  //     throw new NotFoundException(`Doctor not found`);
-  //   }
-  //   return {
-  //     name: updatedDoctor.name,
-  //     specialization: updatedDoctor.specialization,
-  //     availability: updatedDoctor.availability,
-  //     appointments: updatedDoctor.appointments,
-  //     status: 'cancelled',
-  //   };
-  // }
-  // @Delete(':id/appointments')
-  // async cancelAppointment(@Param('id') appointmentId: string): Promise<{
-  //   name: string;
-  //   specialization: string;
-  //   availability: string[];
-  //   appointments: string[];
-  //   status: string;
-  // }> {
-  //   const updatedDoctor = await this.doctorService.cancelAppointment(
-  //     appointmentId,
-  //   );
-  //   if (!updatedDoctor) {
-  //     throw new NotFoundException(`Doctor not found`);
-  //   }
-  //   return {
-  //     name: updatedDoctor.name,
-  //     specialization: updatedDoctor.specialization,
-  //     availability: updatedDoctor.availability,
-  //     appointments: updatedDoctor.appointments,
-  //     status: 'cancelled',
-  //   };
-  // }
 
   @Delete(':id/appointments')
   async cancelAppointment(@Param('id') appointmentId: string): Promise<{
