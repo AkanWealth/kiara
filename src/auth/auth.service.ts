@@ -77,7 +77,7 @@ export class AuthService {
     return user;
   }
 
-  async sendPasswordResetEmail(email: string): Promise<void> {
+  async sendPasswordResetEmail(email: string): Promise<any> {
     const user = await this.userModel.findOne({ email });
     if (!user) {
       throw new NotFoundException('User not found');
@@ -87,16 +87,18 @@ export class AuthService {
       expiresIn: '1h',
     });
 
-    const resetUrl = `https://kiara.com/reset-password/${token}`;
+    const resetUrl = `https://kiara-ugwu.onrender.com/reset-password/${token}`;
 
     await this.mailerService.sendMail({
       to: email,
       subject: 'Password Reset',
       text: `Use the following link to reset your password: ${resetUrl}`,
     });
+
+    return { message: resetUrl };
   }
 
-  async resetPassword(token: string, newPassword: string): Promise<void> {
+  async resetPassword(token: string, newPassword: string): Promise<User> {
     let userId: string;
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET) as {
@@ -114,5 +116,13 @@ export class AuthService {
 
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
+
+    // Call separate function to handle success message
+    // this.handlePasswordResetSuccess();
+    return user;
+  }
+
+  private handlePasswordResetSuccess() {
+    return 'Password reset successful';
   }
 }

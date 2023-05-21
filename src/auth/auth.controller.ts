@@ -57,7 +57,7 @@ export class AuthController {
       credentials.password,
     );
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid email or password');
     }
     const token = await this.authService.generateJwt(user);
     return { user, token };
@@ -82,8 +82,9 @@ export class AuthController {
   }
 
   @Post('forgot-password')
-  async forgotPassword(@Body('email') email: string): Promise<void> {
-    await this.authService.sendPasswordResetEmail(email);
+  async forgotPassword(@Body('email') email: string): Promise<any> {
+    const response = await this.authService.sendPasswordResetEmail(email);
+    return response;
   }
 
   @Post('reset-password')
@@ -91,7 +92,8 @@ export class AuthController {
   async resetPassword(
     @Body('token') token: string,
     @Body('newPassword') newPassword: string,
-  ): Promise<void> {
-    await this.authService.resetPassword(token, newPassword);
+  ): Promise<User> {
+    const response = await this.authService.resetPassword(token, newPassword);
+    return response;
   }
 }
